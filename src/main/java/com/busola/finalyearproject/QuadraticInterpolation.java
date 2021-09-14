@@ -16,20 +16,19 @@ public class QuadraticInterpolation {
     }
     
     public void run(Function f, double x1, double x3, double tol) {
+        System.out.println("\nQuadratic Intepolation >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         Stopwatch timer = new Stopwatch();
+        
         double f1, f2, f3, x2, xbar, fbar, x0 = 1e99;
         x2 = 0.5*(x1 + x3);
         f1 = f.solve(x1);
         f2 = f.solve(x2);
         f3 = f.solve(x3);
         
-//        xbar = ((x2*x2 - x3*x3)*f1 + (x3*x3 - x1*x1)*f2 + (x1*x1 - x2*x2)*f3)/(2*((x2 - x3)*f1 + (x3 - x1)*f2 + (x1 - x2)*f3));
-//        fbar = f.solve(xbar);
-        
-        do {
-            xbar = ((x2*x2 - x3*x3)*f1 + (x3*x3 - x1*x1)*f2 + (x1*x1 - x2*x2)*f3)/(2*((x2 - x3)*f1 + (x3 - x1)*f2 + (x1 - x2)*f3));
-            fbar = f.solve(xbar);
-            
+        xbar = ((x2*x2 - x3*x3)*f1 + (x3*x3 - x1*x1)*f2 + (x1*x1 - x2*x2)*f3)/(2*((x2 - x3)*f1 + (x3 - x1)*f2 + (x1 - x2)*f3));
+        fbar = f.solve(xbar);
+
+        while (Math.abs(xbar-x0) >= tol) {
             if (x1 < xbar && xbar < x2) {
                 if (fbar <= f2) {
                     x3 = x2;
@@ -55,8 +54,10 @@ public class QuadraticInterpolation {
             }
 
             x0 = xbar;
-
-        } while (Math.abs(xbar-x0) >= tol);
+            xbar = ((x2*x2 - x3*x3)*f1 + (x3*x3 - x1*x1)*f2 + (x1*x1 - x2*x2)*f3)/(2*((x2 - x3)*f1 + (x3 - x1)*f2 + (x1 - x2)*f3));
+            fbar = f.solve(xbar);
+            
+        }
         
         System.out.printf("x∗ = %f and f(x∗) = %f", xbar, fbar);
         double time = timer.elapsedTime();
